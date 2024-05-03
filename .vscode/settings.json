@@ -1,0 +1,4 @@
+{
+    "appService.defaultWebAppToDeploy": "undefined/subscriptions/65e7eaa0-5d97-4134-8820-7ba15819c070/resourceGroups/appsvc_linux_centralus/providers/Microsoft.Web/sites/FMDB",
+    "appService.deploySubpath": "."
+}

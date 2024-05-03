@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Flight Management Archive</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            background-color: #f4f4f4;
+            color: #333;
+        }
+        h1 {
+            color: #0056b3;
+        }
+        table {
+            width: 100%;
+            margin-top: 20px;
+            border-collapse: collapse;
+        }
+        th, td {
+            padding: 8px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+        th {
+            background-color: #4CAF50;
+            color: white;
+        }
+        tr:hover {background-color: #f5f5f5;}
+    </style>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+</head>
+<body>
+    <h1>Flight Management Archive</h1>
+    <section>
+        <h2>Airlines</h2>
+        <table id="airlines">
+            <tr>
+                <th>Name</th>
+                <th>ICAO Code</th>
+                <th>IATA Code</th>
+                <th>Country</th>
+            </tr>
+        </table>
+    </section>
+    <section>
+        <h2>Airports</h2>
+        <table id="airports">
+            <tr>
+                <th>Name</th>
+                <th>City</th>
+                <th>Country</th>
+                <th>IATA Code</th>
+                <th>ICAO Code</th>
+                <th>Coordinates</th>
+            </tr>
+        </table>
+    </section>
+    <section>
+        <h2>Flights</h2>
+        <table id="flights">
+            <tr>
+                <th>Flight Number</th>
+                <th>Departure Airport</th>
+                <th>Arrival Airport</th>
+                <th>Departure Time</th>
+                <th>Arrival Time</th>
+                <th>Airline</th>
+            </tr>
+        </table>
+    </section>
+
+    <script>
+        function fetchData(url, elementId, keys) {
+    axios.get(url).then(function(response) {
+        const data = response.data;
+        const table = document.getElementById(elementId);
+        data.forEach(item => {
+            const row = table.insertRow(-1);
+            keys.forEach(key => {
+                const cell = row.insertCell(-1);
+                let value = item[key];
+                // Handle objects and undefined values gracefully
+                if (typeof value === 'object' && value !== null) {
+                    value = value.name ? value.name : JSON.stringify(value);
+                } else if (value === undefined) {
+                    value = 'N/A';  // Display 'N/A' if the value is undefined
+                }
+                cell.textContent = value;
+            });
+        });
+    }).catch(function(error) {
+        console.error('Error fetching data:', error);
+    });
+}
+
+document.addEventListener("DOMContentLoaded", function() {
+    fetchData('/api/airlines', 'airlines', ['name', 'icao_code', 'iata_code', 'country']);
+    fetchData('/api/airports', 'airports', ['name', 'city', 'country', 'iata_code', 'icao_code', 'coordinates']);
+    fetchData('/api/flights', 'flights', ['flight_number', 'departure_airport', 'arrival_airport', 'departure_time', 'arrival_time', 'airline']);
+});
+
+    </script>
+</body>
+</html>
